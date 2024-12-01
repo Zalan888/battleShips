@@ -1,0 +1,7 @@
+D:\GitWork\battleShips\bin\Debug\battleShips.exe.config
+D:\GitWork\battleShips\bin\Debug\battleShips.exe
+D:\GitWork\battleShips\bin\Debug\battleShips.pdb
+D:\GitWork\battleShips\obj\Debug\battleShips.csproj.AssemblyReference.cache
+D:\GitWork\battleShips\obj\Debug\battleShips.csproj.CoreCompileInputs.cache
+D:\GitWork\battleShips\obj\Debug\battleShips.exe
+D:\GitWork\battleShips\obj\Debug\battleShips.pdb
