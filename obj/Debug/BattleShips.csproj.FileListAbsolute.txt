@@ -1,0 +1,7 @@
+C:\Users\witmann.zalan\source\repos\BattleShips\bin\Debug\BattleShips.exe.config
+C:\Users\witmann.zalan\source\repos\BattleShips\bin\Debug\BattleShips.exe
+C:\Users\witmann.zalan\source\repos\BattleShips\bin\Debug\BattleShips.pdb
+C:\Users\witmann.zalan\source\repos\BattleShips\obj\Debug\BattleShips.csproj.AssemblyReference.cache
+C:\Users\witmann.zalan\source\repos\BattleShips\obj\Debug\BattleShips.csproj.CoreCompileInputs.cache
+C:\Users\witmann.zalan\source\repos\BattleShips\obj\Debug\BattleShips.exe
+C:\Users\witmann.zalan\source\repos\BattleShips\obj\Debug\BattleShips.pdb
