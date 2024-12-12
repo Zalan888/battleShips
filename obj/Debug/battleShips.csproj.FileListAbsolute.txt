@@ -5,3 +5,10 @@ D:\GitWork\battleShips\obj\Debug\battleShips.csproj.AssemblyReference.cache
 D:\GitWork\battleShips\obj\Debug\battleShips.csproj.CoreCompileInputs.cache
 D:\GitWork\battleShips\obj\Debug\battleShips.exe
 D:\GitWork\battleShips\obj\Debug\battleShips.pdb
+C:\Users\kecskusz8\RiderProjects\battleShips\bin\Debug\battleShips.exe.config
+C:\Users\kecskusz8\RiderProjects\battleShips\bin\Debug\battleShips.exe
+C:\Users\kecskusz8\RiderProjects\battleShips\bin\Debug\battleShips.pdb
+C:\Users\kecskusz8\RiderProjects\battleShips\obj\Debug\battleShips.csproj.AssemblyReference.cache
+C:\Users\kecskusz8\RiderProjects\battleShips\obj\Debug\battleShips.csproj.CoreCompileInputs.cache
+C:\Users\kecskusz8\RiderProjects\battleShips\obj\Debug\battleShips.exe
+C:\Users\kecskusz8\RiderProjects\battleShips\obj\Debug\battleShips.pdb
