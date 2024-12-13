@@ -4,28 +4,32 @@ namespace battleShips
 {
 	internal class Program
 	{
-		static char[,] _player1Map = new char[10, 10]; // Player 1's board
-		static char[,] _player2Map = new char[10, 10]; // Player 2's board
-		static char[,] _player1Attacks = new char[10, 10]; // Player 1's attack map on Player 2 
-		static char[,] _player2Attacks = new char[10, 10]; // Player 2's attack map on Player 1
+		private static char[,] _player1Map = new char[10, 10]; // Player 1's board
+		private static char[,] _player2Map = new char[10, 10]; // Player 2's board
+		private static char[,] _player1Attacks = new char[10, 10]; // Player 1's attack map on Player 2 
+		private static char[,] _player2Attacks = new char[10, 10]; // Player 2's attack map on Player 1
 		
-		// TODO: implement custom player names
-		static int _playerTurn = 1;
-
-		static void Main()
+		//TODO: change the names to be dynamic
+		private static string _player1Name; // Name chosen by player1
+		private static string _player2Name; // Name chosen by player2
+		
+		private static int _playerTurn = 1; 
+		
+		private static void Main()
 		{
 			Menu();
 		}
-
+		
+		// Display the menu
 		private static void Menu()
 		{
 			Console.Clear(); 
 			
 			
-			
-// ASCII art of a battleship
-	// ASCII art of a battleship
-			// ASCII art of a battleship
+// ############################################################################################################
+											// ASCII art of a battleship
+											// ASCII art of a battleship
+											// ASCII art of a battleship
 Console.WriteLine("                                        |__");
 Console.WriteLine("                                        |\\/");
 Console.WriteLine("                                        ---");
@@ -40,9 +44,10 @@ Console.WriteLine(" __..._____--==/___]_|__|_____________________________[___\\=
 Console.WriteLine("|                                                                     BB-61/");
 Console.WriteLine(" \\_________________________________________________________________________|");
 Console.WriteLine("\n");
-			// ASCII art of a battleship
-	// Ascii art of a battleship
-// ASCII art of a battleship
+											// ASCII art of a battleship
+											// Ascii art of a battleship
+											// ASCII art of a battleship
+// ############################################################################################################
 
 			
 
@@ -54,23 +59,25 @@ Console.WriteLine("\n");
             int choice;
             do
             {
-                int.TryParse(Console.ReadLine(), out choice);
-            } while (choice < 1 || choice > 3);
+                int.TryParse(Console.ReadLine(), out choice); // get the input
+            } while (choice < 1 || choice > 3); //check if the input is valid
 
+            // switch to the selected option
             switch (choice)
             {
-                case 1:
+                case 1: // Start the game
                     GameLoop();
                     break;
-                case 2: 
+                case 2:  // Display the tutorial
                     Tutorial();	
                     break;
-                case 3:
+                case 3: // Exit the game
                     Environment.Exit(0);
                     break;
             }
 		}
 
+		// Display the tutorial
 		private static void Tutorial()
 		{
 			Console.Clear();
@@ -91,86 +98,136 @@ Console.WriteLine("\n");
 			Console.Clear();
 			Menu();
 		}
+		
+		private static void SetPlayerNames()
+		{
+			if (_playerTurn == 1)
+			{
+				_player1Name = Console.ReadLine();
+				if (_player1Name == null || _player1Name.Length == 0)
+				{
+					_player1Name = "Player1"; // set a default value
+				}
 
+				_playerTurn = 2; // assigning 2 for playerturn, as the function is based on this value
+			}
+			else
+			{
+				_player2Name = Console.ReadLine();
+				if (_player2Name == null || _player2Name.Length == 0)
+				{
+					_player2Name = "Player2"; // set a default value
+				}
+
+				_playerTurn = 1; // assigning 1 for playerturn, as the function is based on this value
+			}
+		}
+
+		// initialize the game's loop
 		private static void GameLoop()
 		{
 			InitializeMaps();   // fill the maps with water
 			Console.Clear();
 
+			Console.WriteLine("Player 1, choose your name. default:player1");
+			SetPlayerNames();
+			Console.Clear();
+			Console.WriteLine("Player 2, choose your name. default:player2");
+			SetPlayerNames();
+			Console.Clear();
+			
 			PlaceShips(_player1Map); // Player 1 places their ships
 			Console.Clear();
+			
+			
 			PlaceShips(_player2Map); // Player 2 places their ships
 			Console.Clear();
 			_playerTurn = 1;
+			
+			// Game loop:
 			while (true)
 			{
-				if (_playerTurn == 1)
+				if (_playerTurn == 1) // Player 1's turn
 				{
-					int row, col;
+					int row, col; // Variables to store the attack coordinates
 					do
 					{
-						Console.WriteLine($"player{_playerTurn}'s Board:");	// Display the board
+						// Display the boards and ask for the row and column to attack
+						Console.WriteLine($"{_player1Name}'s Board:");	
 						ShowBoard(_player1Map);
 						Console.WriteLine("Attack map:");
 						ShowBoard(_player1Attacks);
-						Console.WriteLine("Player 1's turn to attack!");
+						Console.WriteLine($"{_player1Name}'s turn to attack!");
 						Console.Write("Enter row to attack (0-9): "); 
+						// display the boards and ask for the row and column to attack
+						
 						do
 						{
-							int.TryParse(Console.ReadLine(), out row); // get the row input
-						} while (row < 0 || row > 9);   //check if the input is valid
+							if (int.TryParse(Console.ReadLine(), out row)) // get the row input
+							{
+								row -= 1; // Subtract 1 to convert to 0-based index
+							}
+						} while (row < 0 || row > 9);   // check if the input is valid
+
 						do
 						{
 							Console.Write("Enter column to attack (0-9): ");
-							int.TryParse(Console.ReadLine(), out col);
-						} while (col < 0 || col > 9);   //check if the input is valid
+							if (int.TryParse(Console.ReadLine(), out col)) // get the column input
+                            {
+                                col -= 1; // Subtract 1 to convert to 0-based index
+                            }
+						} while (col < 0 || col > 9);   // check if the input is valid
 					} while (Attack(row, col));
 
 					if (!CheckShipsLeft(_player2Map)) // check if there is a winner
 					{
 						Console.Clear();
-						Console.WriteLine("Player 1 wins! All ships of Player 2 are sunk.");
+						Console.WriteLine($" {_player1Name} wins! All ships of{_player2Name} are sunk.");
 						break;
 					}
 
 					Console.Clear();
-					Console.WriteLine("Next player. Press any button"); // switch to the next player
+					Console.WriteLine("End of your turn. Press any button");
 					Console.ReadKey();
-					_playerTurn = 2;
+					_playerTurn = 2; // switch to the next player
 				}
-				else
+				else // Player 2's turn
 				{
-					int row, col;
+					int row, col; // Variables to store the attack coordinates
 					do
 					{
-						Console.WriteLine($"player{_playerTurn}'s Board:");
+						// Display the boards and ask for the row and column to attack
+						Console.WriteLine($"{_player2Name}'s Board:");
 						ShowBoard(_player2Map);
 						Console.WriteLine("Attack map:");
 						ShowBoard(_player2Attacks);
-						Console.WriteLine("Player 2's turn to attack!");
+						Console.WriteLine($" {_player2Name}'s turn to attack!");
 						Console.Write("Enter row to attack (0-9): ");
+						// display the boards and ask for the row and column to attack
+						
 						do
 						{
-							int.TryParse(Console.ReadLine(), out row);
-						} while (row < 0 || row > 9);   //check if the input is valid
+							int.TryParse(Console.ReadLine(), out row); // get the row input
+						} while (row < 0 || row > 9);   // check if the input is valid
 						do
+						
 						{
 							Console.Write("Enter column to attack (0-9): ");
-							int.TryParse(Console.ReadLine(), out col);
-						} while (col < 0 || col > 9);   //check if the input is valid
+							int.TryParse(Console.ReadLine(), out col); //	get the column input
+						} while (col < 0 || col > 9);   // check if the input is valid
 					} while (Attack(row, col));
 
 					if (!CheckShipsLeft(_player1Map)) // check if there is a winner
 					{
 						Console.Clear();
-						Console.WriteLine("Player 2 wins! All ships of Player 1 are sunk.");
+						Console.WriteLine($"{_player2Name} wins! All ships of {_player1Name} are sunk.");
 						break;
 					}
 
 					Console.Clear();
-					Console.WriteLine("Next player. Press any button"); // switch to the next player
+					Console.WriteLine("End of your turn. Press any button");
 					Console.ReadKey();
-					_playerTurn = 1;
+					_playerTurn = 1; // switch to the next player
 				}
 
 				Console.Clear(); // Clear the screen for the next turn
@@ -180,14 +237,16 @@ Console.WriteLine("\n");
 		private static void InitializeMaps()
 		{
 			// Fill the maps with water
-			for (int i = 0; i < 10; i++)
+			for (int i = 0; i < 10; i++) // Loop through rows
 			{
-				for (int j = 0; j < 10; j++)
+				for (int j = 0; j < 10; j++) // Loop through columns
 				{
-					_player1Map[i, j] = '-';
+					// '-' represents water
+					_player1Map[i, j] = '-'; 
 					_player2Map[i, j] = '-';
 					_player1Attacks[i, j] = '-';
 					_player2Attacks[i, j] = '-';
+					// '-' represents water
 				}
 			}
 		}
@@ -195,7 +254,7 @@ Console.WriteLine("\n");
 		private static void ShowBoard(char[,] board)
 		{
 			// Display the board
-			Console.WriteLine("   0 1 2 3 4 5 6 7 8 9");
+			Console.WriteLine("   1 2 3 4 5 6 7 8 9 10"); // Display the column numbers
 			Console.WriteLine("  ---------------------");
 			for (int i = 0; i < 10; i++) // Loop through rows
 			{
@@ -212,37 +271,56 @@ Console.WriteLine("\n");
 		// Let the player place ships manually on their board
 		private static void PlaceShips(char[,] board)
 		{
-			Console.WriteLine($"player {_playerTurn}, place your ships on the board.");
-			string[] shipNames = { "Carrier", "Battleship", "Destroyer", "Submarine", "Patrol Boat" };
-			int[] shipSizes = { 5, 4, 3, 3, 2 };
+			string[] shipNames = { "Carrier", "Battleship", "Destroyer", "Submarine", "Patrol Boat" }; // Names of the ships
+			int[] shipSizes = { 5, 4, 3, 3, 2 }; // Sizes of the ships
 
-			for (int i = 0; i < shipNames.Length; i++)
+			for (int i = 0; i < shipNames.Length; i++) // Loop through the ships
 			{
 				Console.Clear();
-				ShowBoard(board);
-				bool validPlacement = false;
-				while (!validPlacement)
+				ShowBoard(board); // Display the board
+				
+				//display the player's name
+				// ############################################################################################################
+				if (_playerTurn == 1)  
+				{
+					Console.WriteLine($"{_player1Name}, place your ships on the board.");
+				}
+				else
+				{
+					Console.WriteLine($"{_player2Name}, place your ships on the board.");
+				}
+				// ############################################################################################################
+				//display the player's name
+				
+				bool validPlacement = false; // Flag to check if the ship can be placed
+				while (!validPlacement) // Loop until the ship is placed correctly
 				{
 					Console.WriteLine($"Place your {shipNames[i]} (Size {shipSizes[i]})");
-					int row;
+					int row; // Variables to store the ship's starting position
 					do
 					{
-						Console.Write("Enter the row for the ship's starting position (0-9): ");
-						int.TryParse(Console.ReadLine(), out row);
+						Console.Write("Enter the row for the ship's starting position (1-10): ");
+						if (int.TryParse(Console.ReadLine(), out row ))
+						{
+							row -= 1; // Subtract 1 to convert to 0-based index
+						}
 					} while (row < 0 || row > 9);
-					int col;
+					int col; // Variables to store the ship's starting position
 					do
 					{
-						Console.Write("Enter the column for the ship's starting position (0-9): ");
-						int.TryParse(Console.ReadLine(), out col);
+						Console.Write("Enter the column for the ship's starting position (1-10): ");
+						if (int.TryParse(Console.ReadLine(), out col))
+						{
+							col -= 1; // Subtract 1 to convert to 0-based index
+						}
 					} while (col < 0 || col > 9);
 
 					int direction;
 					do
 					{
-						Console.Write("Enter direction (0 for horizontal, 1 for vertical): ");
+						Console.Write("Enter direction (1 for horizontal, 2 for vertical): ");
 						int.TryParse(Console.ReadLine(), out direction);
-					} while (direction < 0 || direction > 1);
+					} while (direction < 1 || direction > 2);
 
 					validPlacement = CheckShipPlacement(board, row, col, shipSizes[i], direction);
 
@@ -266,7 +344,7 @@ Console.WriteLine("\n");
 		// Check if the ship can be placed in the given position and direction
 		private static bool CheckShipPlacement(char[,] board, int row, int col, int size, int direction)
 		{
-			if (direction == 0) // horizontal
+			if (direction == 1) // horizontal
 			{
 				if (col + size > 10) return false;
 				for (int i = 0; i < size; i++)
@@ -288,7 +366,7 @@ Console.WriteLine("\n");
 		// Place the ship on the board
 		private static void placeShipOnBoard(char[,] board, int row, int col, int size, int direction)
 		{
-			if (direction == 0) // horizontal
+			if (direction == 1) // horizontal
 			{
 				for (int i = 0; i < size; i++)
 				{
