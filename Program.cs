@@ -6,10 +6,10 @@ namespace battleShips
 	{
 		private static char[,] _player1Map = new char[10, 10]; // Player 1's board
 		private static char[,] _player2Map = new char[10, 10]; // Player 2's board
+
 		private static char[,] _player1Attacks = new char[10, 10]; // Player 1's attack map on Player 2 
 		private static char[,] _player2Attacks = new char[10, 10]; // Player 2's attack map on Player 1
-		
-		//TODO: change the names to be dynamic
+        
 		private static string _player1Name; // Name chosen by player1
 		private static string _player2Name; // Name chosen by player2
 		
@@ -78,13 +78,15 @@ Console.WriteLine("\n");
 		}
 
 		// Display the tutorial
+		// ########################################################################################################################################################
+		
 		private static void Tutorial()
 		{
 			Console.Clear();
 			Console.WriteLine("Welcome to Battleships!");
 			Console.WriteLine("The game is played on four 10x10 grids, two for each player.");
 			Console.WriteLine("The grids are typically square – usually 10×10 – and the individual squares in the grid are identified by numbers.");
-			Console.WriteLine("On one grid the player arranges ships and records the shots by the opponent.");
+			Console.WriteLine("On one grid the player arranges ships and records the shots fired by the opponent.");
 			Console.WriteLine("On the other grid the player records their own shots.");
 			Console.WriteLine("Before play begins, each player secretly arranges their ships on their primary grid.");
 			Console.WriteLine("Each ship occupies a number of consecutive squares on the grid, arranged either horizontally or vertically.");
@@ -98,6 +100,9 @@ Console.WriteLine("\n");
 			Console.Clear();
 			Menu();
 		}
+		
+		// ########################################################################################################################################################
+		// Dispaly the tutorial
 		
 		private static void SetPlayerNames()
 		{
@@ -254,14 +259,27 @@ Console.WriteLine("\n");
 		private static void ShowBoard(char[,] board)
 		{
 			// Display the board
-			Console.WriteLine("   1 2 3 4 5 6 7 8 9 10"); // Display the column numbers
-			Console.WriteLine("  ---------------------");
+			Console.WriteLine("     1  2  3  4  5  6  7  8  9  10 "); // Display the column numbers
+			Console.WriteLine("   \u2554═════════════════════════════"); // Display the top border");
 			for (int i = 0; i < 10; i++) // Loop through rows
 			{
-				Console.Write($"{i} |");
+				
+				// Add an extra space for single-digit row numbers
+				//############################################################################################################
+				if (i == 9) 
+                {
+                    Console.Write($"{i + 1} ║"); // Display the row number
+                }
+                else
+                {
+                    Console.Write($"{i + 1}  ║"); // Display the row number
+                }
+				//############################################################################################################
+				// Add an extra space for single-digit row numbers
+				
 				for (int j = 0; j < 10; j++) // Loop through columns
 				{
-					Console.Write($" {board[i, j]}"); // Display the cell
+					Console.Write($" {board[i, j]} "); // Display the cell
 				}
 				Console.WriteLine();
 			}
@@ -305,7 +323,7 @@ Console.WriteLine("\n");
 							row -= 1; // Subtract 1 to convert to 0-based index
 						}
 					} while (row < 0 || row > 9);
-					int col; // Variables to store the ship's starting position
+					int col; // Variables to store the ship's starting position 
 					do
 					{
 						Console.Write("Enter the column for the ship's starting position (1-10): ");
