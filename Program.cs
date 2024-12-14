@@ -4,12 +4,12 @@ namespace battleShips
 {
 	internal class Program
 	{
+		private static int _mapSize = 10; // Size of the board
 		private static char[,] _player1Map = new char[10, 10]; // Player 1's board
 		private static char[,] _player2Map = new char[10, 10]; // Player 2's board
 
-		private static char[,] _player1Attacks = new char[10, 10]; // Player 1's attack map on Player 2 
+		private static char[,] _player1Attacks = new char[10, 10]; // Player 1's attack map on Player 2
 		private static char[,] _player2Attacks = new char[10, 10]; // Player 2's attack map on Player 1
-        
 		private static string _player1Name; // Name chosen by player1
 		private static string _player2Name; // Name chosen by player2
 		
@@ -54,13 +54,14 @@ Console.WriteLine("\n");
 			Console.WriteLine("Welcome to Battleships!");
             Console.WriteLine("1. Start Game");
             Console.WriteLine("2. Tutorial");
-            Console.WriteLine("3. Exit");
+            Console.WriteLine("3. Options");
+            Console.WriteLine("4. Exit");
             Console.Write("Enter your choice: ");
             int choice;
             do
             {
                 int.TryParse(Console.ReadLine(), out choice); // get the input
-            } while (choice < 1 || choice > 3); //check if the input is valid
+            } while (choice < 1 || choice > 4); //check if the input is valid
 
             // switch to the selected option
             switch (choice)
@@ -71,11 +72,60 @@ Console.WriteLine("\n");
                 case 2:  // Display the tutorial
                     Tutorial();	
                     break;
-                case 3: // Exit the game
+                case 3: // options
+                    Options();
+                    break;
+                case 4: // Exit the game
                     Environment.Exit(0);
+	                break;
+            }
+		}
+		
+		// Display and handle the options
+		private static void Options()
+		{
+			Console.Clear();
+            Console.WriteLine("Options:");
+            Console.WriteLine("1. Change board size");
+            //TODO: add a gamemode switch option
+            Console.WriteLine("2. Return to menu");
+            Console.Write("Enter your choice: ");
+            int choice;
+            do
+            {
+                int.TryParse(Console.ReadLine(), out choice); // get the input
+            } while (choice < 1 || choice > 2); //check if the input is valid
+
+            // switch to the selected option
+            switch (choice)
+            {
+                case 1: // Change the board size
+                    ChangeBoardSize();
+                    break;
+                case 2: // Return to the menu
+                    Menu();
                     break;
             }
 		}
+		
+		// Change the size of the board (default: 10) based on the user's input
+		private static void ChangeBoardSize()
+        {
+            Console.Clear();
+            Console.WriteLine("Enter the size of the board (default: 10): ");
+            do
+            {
+                int.TryParse(Console.ReadLine(), out _mapSize); // get the input
+            } while (_mapSize < 1); // check if the input is valid
+
+            // Initialize the maps with the new size
+            _player1Map = new char[_mapSize, _mapSize];
+            _player2Map = new char[_mapSize, _mapSize];
+            _player1Attacks = new char[_mapSize, _mapSize];
+            _player2Attacks = new char[_mapSize, _mapSize];
+
+            Menu();
+        }
 
 		// Display the tutorial
 		// ########################################################################################################################################################
@@ -163,7 +213,7 @@ Console.WriteLine("\n");
 						Console.WriteLine("Attack map:");
 						ShowBoard(_player1Attacks);
 						Console.WriteLine($"{_player1Name}'s turn to attack!");
-						Console.Write("Enter row to attack (0-9): "); 
+						Console.Write("Enter row to attack (1-10): "); 
 						// display the boards and ask for the row and column to attack
 						
 						do
@@ -176,7 +226,7 @@ Console.WriteLine("\n");
 
 						do
 						{
-							Console.Write("Enter column to attack (0-9): ");
+							Console.Write("Enter column to attack (1-10): ");
 							if (int.TryParse(Console.ReadLine(), out col)) // get the column input
                             {
                                 col -= 1; // Subtract 1 to convert to 0-based index
@@ -207,7 +257,7 @@ Console.WriteLine("\n");
 						Console.WriteLine("Attack map:");
 						ShowBoard(_player2Attacks);
 						Console.WriteLine($" {_player2Name}'s turn to attack!");
-						Console.Write("Enter row to attack (0-9): ");
+						Console.Write("Enter row to attack (1-10): ");
 						// display the boards and ask for the row and column to attack
 						
 						do
@@ -217,7 +267,7 @@ Console.WriteLine("\n");
 						do
 						
 						{
-							Console.Write("Enter column to attack (0-9): ");
+							Console.Write("Enter column to attack (1-10): ");
 							int.TryParse(Console.ReadLine(), out col); //	get the column input
 						} while (col < 0 || col > 9);   // check if the input is valid
 					} while (Attack(row, col));
@@ -242,9 +292,9 @@ Console.WriteLine("\n");
 		private static void InitializeMaps()
 		{
 			// Fill the maps with water
-			for (int i = 0; i < 10; i++) // Loop through rows
+			for (int i = 0; i < _mapSize; i++) // Loop through rows
 			{
-				for (int j = 0; j < 10; j++) // Loop through columns
+				for (int j = 0; j < _mapSize; j++) // Loop through columns
 				{
 					// '-' represents water
 					_player1Map[i, j] = '-'; 
@@ -258,15 +308,24 @@ Console.WriteLine("\n");
 
 		private static void ShowBoard(char[,] board)
 		{
-			// Display the board
-			Console.WriteLine("     1  2  3  4  5  6  7  8  9  10 "); // Display the column numbers
+			
+			// TODO: Add aligment fix for dynamic board sizes
+			//Display the board
+			Console.Write("  "); //Add indentation for alignment
+			for (int i = 0; i < _mapSize; i++) // cycle for dynamic board size
+            {
+                Console.Write($" {i + 1}"); // Display the column number
+            }
+
+			Console.WriteLine(); // Move to the next line
+			
 			Console.WriteLine("   \u2554═════════════════════════════"); // Display the top border");
-			for (int i = 0; i < 10; i++) // Loop through rows
+			for (int i = 0; i < _mapSize; i++) // Loop through rows
 			{
 				
 				// Add an extra space for single-digit row numbers
 				//############################################################################################################
-				if (i == 9) 
+				if (i >= 9) 
                 {
                     Console.Write($"{i + 1} ║"); // Display the row number
                 }
@@ -277,9 +336,9 @@ Console.WriteLine("\n");
 				//############################################################################################################
 				// Add an extra space for single-digit row numbers
 				
-				for (int j = 0; j < 10; j++) // Loop through columns
+				for (int j = 0; j < _mapSize; j++) // Loop through columns
 				{
-					Console.Write($" {board[i, j]} "); // Display the cell
+					Console.Write($" {board[i, j]}  "); // Display the cell
 				}
 				Console.WriteLine();
 			}
