@@ -340,11 +340,14 @@ Console.WriteLine("\n");
     Console.WriteLine();
 }
 
+		
+		// TODO: Add option to pick up ships after they are placed
+		
 		// Let the player place ships manually on their board
 		private static void PlaceShips(char[,] board)
 		{
 			string[] shipNames = { "carrier", "battleship", "destroyer", "submarine", "patrol boat" }; // Names of the ships
-			int[] shipSizes = { 6, 5, 4, 3, 2 }; // Sizes of the ships
+			int[] shipSizes = { 5, 4, 3, 3, 2 }; // Sizes of the ships
 
 			for (int i = 0; i < shipNames.Length; i++) // Loop through the ships
 			{
@@ -496,13 +499,16 @@ Console.WriteLine("\n");
 			{
 				if (_player2Map[row, col] == 'S' || _player2Map[row, col] == 'D' || _player2Map[row, col] == 'B' || _player2Map[row, col] == 'C' || _player2Map[row, col] == 'P')
 				{
+					char shipType = _player2Map[row, col];
 					_player2Map[row, col] = 'X'; // Mark as hit
 					_player1Attacks[row, col] = 'X';
 					Console.WriteLine("Hit!");
-					if (CheckShipSunk(_player2Map)) // Check if the ship has been sunk
+					if (CheckShipSunk(_player2Map, shipType)) // Check if the ship has been sunk
 					{
 						Console.WriteLine("Ship sunk!");
 					}
+					Console.WriteLine("Press any key to continue");
+					Console.ReadKey();
 					return true;
 				}
 				else if (_player2Map[row, col] != 'X')
@@ -522,13 +528,16 @@ Console.WriteLine("\n");
 			{
 				if (_player1Map[row, col] == 'S' || _player1Map[row, col] == 'D' || _player1Map[row, col] == 'B' || _player1Map[row, col] == 'C' || _player1Map[row, col] == 'P')
 				{
+					char shipType = _player1Map[row, col];
 					_player1Map[row, col] = 'X'; // Mark as hit
 					_player2Attacks[row, col] = 'X';
 					Console.WriteLine("Hit!");
-					if (CheckShipSunk(_player1Map)) // Check if the ship has been sunk
+					if (CheckShipSunk(_player1Map, shipType)) // Check if the ship has been sunk
 					{
 						Console.WriteLine("Ship sunk!");
 					}
+					Console.WriteLine("Press any key to continue");
+					Console.ReadKey();
 					return true;
 				}
 				else if (_player1Map[row, col] != 'X')
@@ -548,17 +557,13 @@ Console.WriteLine("\n");
 		}
 		
 		// Check if a ship has been sunk
-		private static bool CheckShipSunk( char[,] board)
+		private static bool CheckShipSunk( char[,] board, char shipType)
 		{
 			foreach (var cell in board)
 			{
-				if (cell == 'S' || cell == 'D' || cell == 'B' || cell == 'C' || cell == 'P')
+				if (cell == shipType)
 				{
 					return false; // The ship has not been sunk
-				}
-				else
-				{
-					return true; // The ship has been sunk
 				}
 			}
 			return true; // The ship has been sunk
