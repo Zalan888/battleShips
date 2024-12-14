@@ -308,22 +308,34 @@ Console.WriteLine("\n");
 
 		private static void ShowBoard(char[,] board)
 		{
-			
-			// TODO: Add aligment fix for dynamic board sizes
 			//Display the board
-			Console.Write("  "); //Add indentation for alignment
+			Console.Write("    "); //Add indentation for alignment
+			
+			
+			// dynamic board numbers
 			for (int i = 0; i < _mapSize; i++) // cycle for dynamic board size
             {
-                Console.Write($" {i + 1}"); // Display the column number
+                Console.Write($" {i + 1}  "); // Display the column number
             }
+	        // dynamic board numbers
+			
+			Console.WriteLine(); // Move to the next line
 
+			
+			Console.Write("    "); // Add indentation for alignment
+			// dynamic board top line
+			for (int i = 0; i < _mapSize; i++)
+			{
+				Console.Write("════");
+			}
+	        // Dynamic board top line
+			
 			Console.WriteLine(); // Move to the next line
 			
-			Console.WriteLine("   \u2554═════════════════════════════"); // Display the top border");
 			for (int i = 0; i < _mapSize; i++) // Loop through rows
 			{
 				
-				// Add an extra space for single-digit row numbers
+				// Add an extra space for double-digit row numbers
 				//############################################################################################################
 				if (i >= 9) 
                 {
@@ -334,7 +346,7 @@ Console.WriteLine("\n");
                     Console.Write($"{i + 1}  ║"); // Display the row number
                 }
 				//############################################################################################################
-				// Add an extra space for single-digit row numbers
+				// Add an extra space for double-digit row numbers
 				
 				for (int j = 0; j < _mapSize; j++) // Loop through columns
 				{
