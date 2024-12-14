@@ -307,61 +307,44 @@ Console.WriteLine("\n");
 		}
 
 		private static void ShowBoard(char[,] board)
-		{
-			//Display the board
-			Console.Write("    "); //Add indentation for alignment
-			
-			
-			// dynamic board numbers
-			for (int i = 0; i < _mapSize; i++) // cycle for dynamic board size
-            {
-                Console.Write($" {i + 1}  "); // Display the column number
-            }
-	        // dynamic board numbers
-			
-			Console.WriteLine(); // Move to the next line
+{
+    // Display the board
+    Console.Write("    "); // Add indentation for alignment
 
-			
-			Console.Write("    "); // Add indentation for alignment
-			// dynamic board top line
-			for (int i = 0; i < _mapSize; i++)
-			{
-				Console.Write("════");
-			}
-	        // Dynamic board top line
-			
-			Console.WriteLine(); // Move to the next line
-			
-			for (int i = 0; i < _mapSize; i++) // Loop through rows
-			{
-				
-				// Add an extra space for double-digit row numbers
-				//############################################################################################################
-				if (i >= 9) 
-                {
-                    Console.Write($"{i + 1} ║"); // Display the row number
-                }
-                else
-                {
-                    Console.Write($"{i + 1}  ║"); // Display the row number
-                }
-				//############################################################################################################
-				// Add an extra space for double-digit row numbers
-				
-				for (int j = 0; j < _mapSize; j++) // Loop through columns
-				{
-					Console.Write($" {board[i, j]}  "); // Display the cell
-				}
-				Console.WriteLine();
-			}
-			Console.WriteLine();
-		}
+    // Dynamic board numbers
+    for (int i = 0; i < _mapSize; i++) // Cycle for dynamic board size
+    {
+        Console.Write(i >= 9 ? $" {i + 1}" : $" {i + 1} "); // Display the column number
+    }
+    Console.WriteLine(); // Move to the next line
+
+    Console.Write("    "); // Add indentation for alignment
+    // Dynamic board top line
+    for (int i = 0; i < _mapSize; i++)
+    {
+        Console.Write("═══");
+    }
+    Console.WriteLine(); // Move to the next line
+
+    for (int i = 0; i < _mapSize; i++) // Loop through rows
+    {
+        // Add an extra space for double-digit row numbers
+        Console.Write(i >= 9 ? $"{i + 1} ║" : $"{i + 1}  ║"); // Display the row number
+
+        for (int j = 0; j < _mapSize; j++) // Loop through columns
+        {
+            Console.Write($" {board[i, j]} "); // Display the cell
+        }
+        Console.WriteLine();
+    }
+    Console.WriteLine();
+}
 
 		// Let the player place ships manually on their board
 		private static void PlaceShips(char[,] board)
 		{
-			string[] shipNames = { "Carrier", "Battleship", "Destroyer", "Submarine", "Patrol Boat" }; // Names of the ships
-			int[] shipSizes = { 5, 4, 3, 3, 2 }; // Sizes of the ships
+			string[] shipNames = { "carrier", "battleship", "destroyer", "submarine", "patrol boat" }; // Names of the ships
+			int[] shipSizes = { 6, 5, 4, 3, 2 }; // Sizes of the ships
 
 			for (int i = 0; i < shipNames.Length; i++) // Loop through the ships
 			{
@@ -408,14 +391,14 @@ Console.WriteLine("\n");
 					do
 					{
 						Console.Write("Enter direction (1 for horizontal, 2 for vertical): ");
-						int.TryParse(Console.ReadLine(), out direction);
-					} while (direction < 1 || direction > 2);
+						int.TryParse(Console.ReadLine(), out direction); // get the direction input
+					} while (direction < 1 || direction > 2); // check if the input is valid
 
-					validPlacement = CheckShipPlacement(board, row, col, shipSizes[i], direction);
+					validPlacement = CheckShipPlacement(board, row, col, shipSizes[i], direction); // Check if the ship can be placed
 
-					if (validPlacement)
+					if (validPlacement) 
 					{
-						placeShipOnBoard(board, row, col, shipSizes[i], direction);
+						placeShipOnBoard(board, row, col, shipSizes[i], direction, shipNames[i]); // Place the ship on the board
 						Console.WriteLine($"{shipNames[i]} placed successfully!");
 					}
 					else
@@ -424,10 +407,10 @@ Console.WriteLine("\n");
 					}
 				}
 			}
-			_playerTurn = 2;
+			_playerTurn = 2; // switch to the next player
 			Console.Clear();
 			Console.WriteLine("Next player. Press any button");
-			Console.ReadKey();
+			Console.ReadKey(); // Wait for the player to press a key
 		}
 
 		// Check if the ship can be placed in the given position and direction
@@ -453,20 +436,55 @@ Console.WriteLine("\n");
 		}
 
 		// Place the ship on the board
-		private static void placeShipOnBoard(char[,] board, int row, int col, int size, int direction)
+		private static void placeShipOnBoard(char[,] board, int row, int col, int size, int direction, string shipname)
 		{
 			if (direction == 1) // horizontal
 			{
 				for (int i = 0; i < size; i++)
 				{
-					board[row, col + i] = 'S'; // 'S' represents ship
+					switch (shipname)
+					{
+						case "patrol boat":
+							board[row, col + i] = 'P'; // 'P' represents patrol boat
+							break;
+						case "submarine":
+							board[row, col + i] = 'S'; // 'S' represents submarine
+							break;
+						case "destroyer":
+							board[row, col + i] = 'D'; // 'D' represents destroyer
+							break;
+						case "battleship":
+							board[row, col + i] = 'B'; // 'B' represents battleship
+							break;
+						case "carrier":
+							board[row, col + i] = 'C'; // 'C' represents carrier
+							break;
+					}
 				}
 			}
+
 			else // vertical
 			{
 				for (int i = 0; i < size; i++)
 				{
-					board[row + i, col] = 'S'; // 'S' represents ship
+					switch (shipname)
+					{
+						case "patrol boat":
+							board[row + i, col] = 'P'; // 'P' represents patrol boat
+							break;
+						case "submarine":
+							board[row + i, col] = 'S'; // 'S' represents submarine
+							break;
+						case "destroyer":
+							board[row + i, col] = 'D'; // 'D' represents destroyer
+							break;
+						case "battleship":
+							board[row + i, col] = 'B'; // 'B' represents battleship
+							break;
+						case "carrier":
+							board[row + i, col] = 'C'; // 'C' represents carrier
+							break;
+					}
 				}
 			}
 		}
@@ -476,11 +494,15 @@ Console.WriteLine("\n");
 		{
 			if (_playerTurn == 1)
 			{
-				if (_player2Map[row, col] == 'S')
+				if (_player2Map[row, col] == 'S' || _player2Map[row, col] == 'D' || _player2Map[row, col] == 'B' || _player2Map[row, col] == 'C' || _player2Map[row, col] == 'P')
 				{
 					_player2Map[row, col] = 'X'; // Mark as hit
 					_player1Attacks[row, col] = 'X';
 					Console.WriteLine("Hit!");
+					if (CheckShipSunk(_player2Map)) // Check if the ship has been sunk
+					{
+						Console.WriteLine("Ship sunk!");
+					}
 					return true;
 				}
 				else if (_player2Map[row, col] != 'X')
@@ -498,11 +520,15 @@ Console.WriteLine("\n");
 			}
 			else
 			{
-				if (_player1Map[row, col] == 'S')
+				if (_player1Map[row, col] == 'S' || _player1Map[row, col] == 'D' || _player1Map[row, col] == 'B' || _player1Map[row, col] == 'C' || _player1Map[row, col] == 'P')
 				{
 					_player1Map[row, col] = 'X'; // Mark as hit
 					_player2Attacks[row, col] = 'X';
 					Console.WriteLine("Hit!");
+					if (CheckShipSunk(_player1Map)) // Check if the ship has been sunk
+					{
+						Console.WriteLine("Ship sunk!");
+					}
 					return true;
 				}
 				else if (_player1Map[row, col] != 'X')
@@ -520,13 +546,30 @@ Console.WriteLine("\n");
 
 			}
 		}
+		
+		// Check if a ship has been sunk
+		private static bool CheckShipSunk( char[,] board)
+		{
+			foreach (var cell in board)
+			{
+				if (cell == 'S' || cell == 'D' || cell == 'B' || cell == 'C' || cell == 'P')
+				{
+					return false; // The ship has not been sunk
+				}
+				else
+				{
+					return true; // The ship has been sunk
+				}
+			}
+			return true; // The ship has been sunk
+		}
 
 		// Check if all ships have been sunk
 		private static bool CheckShipsLeft(char[,] board)
 		{
 			foreach (var cell in board)
 			{
-				if (cell == 'S')
+				if (cell == 'S' || cell == 'D' || cell == 'B' || cell == 'C' || cell == 'P')
 				{
 					return true; // There are still ships on the board
 				}
