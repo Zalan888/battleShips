@@ -19,3 +19,10 @@ C:\Users\witmann.zalan\Desktop\BattleShips\obj\Debug\battleShips.csproj.Assembly
 C:\Users\witmann.zalan\Desktop\BattleShips\obj\Debug\battleShips.csproj.CoreCompileInputs.cache
 C:\Users\witmann.zalan\Desktop\BattleShips\obj\Debug\battleShips.exe
 C:\Users\witmann.zalan\Desktop\BattleShips\obj\Debug\battleShips.pdb
+C:\Users\kecskusz8\RiderProjects\battleShips1\bin\Debug\battleShips.exe.config
+C:\Users\kecskusz8\RiderProjects\battleShips1\bin\Debug\battleShips.exe
+C:\Users\kecskusz8\RiderProjects\battleShips1\bin\Debug\battleShips.pdb
+C:\Users\kecskusz8\RiderProjects\battleShips1\obj\Debug\battleShips.csproj.AssemblyReference.cache
+C:\Users\kecskusz8\RiderProjects\battleShips1\obj\Debug\battleShips.csproj.CoreCompileInputs.cache
+C:\Users\kecskusz8\RiderProjects\battleShips1\obj\Debug\battleShips.exe
+C:\Users\kecskusz8\RiderProjects\battleShips1\obj\Debug\battleShips.pdb
