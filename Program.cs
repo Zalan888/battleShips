@@ -235,6 +235,15 @@ namespace battleShips
             int row, col;
             do
             {
+                if (!CheckShipsLeft(opponentMap)) // check if there is a winner
+                {
+                    Console.Clear();
+                    Console.WriteLine($"{playerName} wins! All ships of the opponent are sunk.");
+                    Console.WriteLine("Press any key to return to menu.");
+                    Console.ReadKey();
+                    Menu();
+                }
+
                 Console.WriteLine($"{playerName}'s turn to attack!");
                 Console.WriteLine("Your map:");
                 ShowBoard(playerMap);
@@ -254,17 +263,9 @@ namespace battleShips
                     if (int.TryParse(Console.ReadLine(), out col)) // get the column input
                         col -= 1; // 0-based index conversion
                 } while (col < 0 || col >= _mapSize); // check if the input is valid
+            } while (Attack(row, col, opponentMap, playerAttacks));
 
-
-                if (!CheckShipsLeft(opponentMap)) // check if there is a winner
-                {
-                    Console.Clear();
-                    Console.WriteLine($"{playerName} wins! All ships of the opponent are sunk.");
-                    Environment.Exit(0); // Exit the game
-                }
-            } while (Attack(row, col));
-
-
+            _playerTurn = _playerTurn == 1 ? 2 : 1; // Switch the player turn
             Console.Clear();
             Console.WriteLine("End of your turn. Press any button");
             Console.ReadKey();
@@ -442,60 +443,34 @@ namespace battleShips
 
         // Perform an attack on the opponent's map
         //TODO: refactor this method due to duplication
-        private static bool Attack(int row, int col)
+        private static bool Attack(int row, int col, char[,] enemyPlayerMap, char[,] playerAttackMap)
         {
-            if (_playerTurn == 1)
+            // Check if there is a ship at the target location
+            if (enemyPlayerMap[row, col] == 'S' || enemyPlayerMap[row, col] == 'D' || enemyPlayerMap[row, col] == 'B' ||
+                enemyPlayerMap[row, col] == 'C' || enemyPlayerMap[row, col] == 'P')
             {
-                if (_player2Map[row, col] == 'S' || _player2Map[row, col] == 'D' || _player2Map[row, col] == 'B' ||
-                    _player2Map[row, col] == 'C' || _player2Map[row, col] == 'P')
-                {
-                    var shipType = _player2Map[row, col];
-                    _player2Map[row, col] = 'X'; // Mark as hit
-                    _player1Attacks[row, col] = 'X';
-                    Console.WriteLine("Hit!");
-                    if (CheckShipSunk(_player2Map, shipType)) Console.WriteLine("Ship sunk!");
-
-                    Console.WriteLine("Press any key to continue");
-                    Console.ReadKey();
-                    return true;
-                }
-
-                if (_player2Map[row, col] != 'X')
-                {
-                    _player2Map[row, col] = 'O';
-                    _player1Attacks[row, col] = 'O';
-                    Console.WriteLine("Miss!");
-                    return false;
-                }
-
-                Console.WriteLine("Already tried!");
-                return true;
-            }
-
-            if (_player1Map[row, col] == 'S' || _player1Map[row, col] == 'D' || _player1Map[row, col] == 'B' ||
-                _player1Map[row, col] == 'C' || _player1Map[row, col] == 'P')
-            {
-                var shipType = _player1Map[row, col];
-                _player1Map[row, col] = 'X'; // Mark as hit
-                _player2Attacks[row, col] = 'X';
+                var shipType = enemyPlayerMap[row, col];
+                enemyPlayerMap[row, col] = 'X'; // Mark as hit
+                playerAttackMap[row, col] = 'X';
                 Console.WriteLine("Hit!");
-                if (CheckShipSunk(_player1Map, shipType)) Console.WriteLine("Ship sunk!");
+                if (CheckShipSunk(enemyPlayerMap, shipType)) Console.WriteLine("Ship sunk!");
 
                 Console.WriteLine("Press any key to continue");
                 Console.ReadKey();
                 return true;
             }
-
-            if (_player1Map[row, col] != 'X')
+            else if (enemyPlayerMap[row, col] == '-') // Check if the target location is water
             {
-                _player1Map[row, col] = 'O';
-                _player2Attacks[row, col] = 'O';
+                enemyPlayerMap[row, col] = 'O';
+                playerAttackMap[row, col] = 'O';
                 Console.WriteLine("Miss!");
                 return false;
             }
-
-            Console.WriteLine("Already tried!");
-            return true;
+            else
+            {
+                Console.WriteLine("Already tried!");
+                return true;
+            }
         }
 
         // Check if a ship has been sunk
@@ -518,12 +493,13 @@ namespace battleShips
             return false; // No ships left
         }
 
-        // Pick up the ship after it is placed, and place it in a new position
-
-        //TODO: refactor this method
         private static void ReplaceShip(char[,] map, string ship)
         {
             var sizeCounter = PickUpShip(map, ship); // Pick up the ship
+            Console.Clear();
+            Console.WriteLine("Ship successfully picked up!");
+            ShowBoard(map);
+            Console.WriteLine($"Place your size :{sizeCounter} ship.");
 
             int row; // Variables to store the ship's starting position
             do
@@ -577,11 +553,6 @@ namespace battleShips
                     sizeCounter++;
                 }
 
-            // Ask the player to place the ship again
-            Console.Clear();
-            Console.WriteLine("Ship successfully picked up!");
-            ShowBoard(map);
-            Console.WriteLine($"Place your size :{sizeCounter} ship.");
             return sizeCounter;
         }
     }
