@@ -48,7 +48,7 @@ namespace battleShips
             {
                 Console.WriteLine("You have the option to replace your ships.");
                 Console.WriteLine("enter 'exit' if you want to skip, or enter the character representing your ship");
-                MainClass.ShowBoard(playerMap);
+                Show.Board(playerMap);
                 var userInput = Console.ReadLine();
                 if (userInput == "exit") break;
 
@@ -66,8 +66,8 @@ namespace battleShips
         private static void Maps()
         {
             // Fill the maps with water
-            for (var i = 0; i < MainClass._mapSize; i++)
-            for (var j = 0; j < MainClass._mapSize; j++)
+            for (var i = 0; i < MainClass.mapSize; i++)
+            for (var j = 0; j < MainClass.mapSize; j++)
             {
                 // '-' represents water
                 MainClass.player1Map[i, j] = '-';
@@ -82,7 +82,7 @@ namespace battleShips
             var sizeCounter = PickUpShip(map, ship); // Pick up the ship
             Console.Clear();
             Console.WriteLine("Ship successfully picked up!");
-            MainClass.ShowBoard(map);
+            Show.Board(map);
             Console.WriteLine($"Place your size :{sizeCounter} ship.");
 
             int row; // Variables to store the ship's starting position
@@ -107,7 +107,7 @@ namespace battleShips
             } while (direction < 1 || direction > 2); // check if the input is valid
 
             var validPlacement =
-                MainClass.CheckShipPlacement(map, row, col, sizeCounter, direction); // Check if the ship can be placed
+                Check.ShipPlacement(map, row, col, sizeCounter, direction); // Check if the ship can be placed
 
             if (validPlacement)
             {
@@ -123,8 +123,8 @@ namespace battleShips
         private static int PickUpShip(char[,] map, string ship)
         {
             var sizeCounter = 0;
-            for (var i = 0; i < MainClass._mapSize; i++)
-            for (var j = 0; j < MainClass._mapSize; j++)
+            for (var i = 0; i < MainClass.mapSize; i++)
+            for (var j = 0; j < MainClass.mapSize; j++)
                 if (map[i, j] == Convert.ToChar(ship))
                 {
                     map[i, j] = '-';

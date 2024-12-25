@@ -4,7 +4,7 @@ namespace battleShips
 {
     internal class MainClass
     {
-        public static int _mapSize = 10;
+        public static int mapSize = 10;
 
         public static char[,] player1Map = new char[10, 10];
         public static char[,] player2Map = new char[10, 10];
@@ -17,13 +17,15 @@ namespace battleShips
 
         public static int playerTurn = 1;
 
+        public static int gameMode = 1; // 1 = normal, 2 = Salvo
+
         private static void Main()
         {
             Menu();
         }
 
         // Display the menu
-        private static void Menu()
+        public static void Menu()
         {
             Console.Clear();
 
@@ -55,7 +57,6 @@ namespace battleShips
             Console.WriteLine("Welcome to Battleships!");
             Console.WriteLine("1. Start Game");
             Console.WriteLine("2. Tutorial");
-
             Console.WriteLine("3. Options");
             Console.WriteLine("4. Exit");
             Console.Write("Enter your choice: ");
@@ -71,10 +72,10 @@ namespace battleShips
                     GameLoop();
                     break;
                 case 2:
-                    ShowTutorial();
+                    Show.Tutorial();
                     break;
                 case 3:
-                    ShowOptions();
+                    Show.Options();
                     break;
                 case 4: // Exit the game
                     Environment.Exit(0);
@@ -87,80 +88,18 @@ namespace battleShips
             Initialize.Game();
 
             // Game loop
-            while (true)
-                if (playerTurn == 1)
-                    TurnBasedAttack(player1Name, player1Attacks, player2Map, player1Map);
-                else
-                    TurnBasedAttack(player2Name, player2Attacks, player1Map, player2Map);
-        }
-
-        private static void ShowTutorial()
-        {
-            Console.Clear();
-            Console.WriteLine("Welcome to Battleships!");
-            Console.WriteLine("The game is played on four 10x10 grids, two for each player.");
-            Console.WriteLine(
-                "The grids are typically square – usually 10×10 – and the individual squares in the grid are identified by numbers.");
-            Console.WriteLine("On one grid the player arranges ships and records the shots fired by the opponent.");
-            Console.WriteLine("On the other grid the player records their own shots.");
-            Console.WriteLine("Before play begins, each player secretly arranges their ships on their primary grid.");
-            Console.WriteLine(
-                "Each ship occupies a number of consecutive squares on the grid, arranged either horizontally or vertically.");
-            Console.WriteLine("The number of squares for each ship is determined by the type of the ship.");
-            Console.WriteLine(
-                "The ships cannot overlap (i.e., only one ship can occupy any given square in the grid).");
-            Console.WriteLine("The types and numbers of ships allowed are the same for each player.");
-            Console.WriteLine("After the ships have been positioned, the game proceeds in a series of rounds.");
-            Console.WriteLine(
-                "In each round, each player takes a turn to announce a target square in the opponent's grid which is to be shot at.");
-            Console.WriteLine("Press any key to return to the menu!");
-            Console.ReadKey();
-            Console.Clear();
-            Menu();
-        }
-
-        private static void ShowOptions()
-        {
-            Console.Clear();
-            Console.WriteLine("Options:");
-            Console.WriteLine("1. Change board size");
-            //TODO: add a gamemode switch option
-            Console.WriteLine("2. Return to menu");
-            Console.Write("Enter your choice: ");
-            int choice;
-            do
+            switch (gameMode)
             {
-                int.TryParse(Console.ReadLine(), out choice); // get the input
-            } while (choice < 1 || choice > 2); //check if the input is valid
-
-
-            switch (choice)
-            {
-                case 1:
-                    ChangeBoardSize();
-                    break;
-                case 2:
-                    Menu();
+                case 1: // Normal mode
+                    while (true)
+                    {
+                        TurnBasedAttack(player1Name, player1Attacks, player2Map, player1Map);
+                        TurnBasedAttack(player2Name, player2Attacks, player1Map, player2Map);
+                    }
+                case 2: // Salvo mode
+                    Salvo.Loop();
                     break;
             }
-        }
-
-        private static void ChangeBoardSize()
-        {
-            Console.Clear();
-            Console.WriteLine("Enter the size of the board (default: 10): ");
-            do
-            {
-                int.TryParse(Console.ReadLine(), out _mapSize); // get the input
-            } while (_mapSize < 1); // check if the input is valid
-
-            // Initialize the maps with the new size
-            player1Map = new char[_mapSize, _mapSize];
-            player2Map = new char[_mapSize, _mapSize];
-            player1Attacks = new char[_mapSize, _mapSize];
-            player2Attacks = new char[_mapSize, _mapSize];
-
-            Menu();
         }
 
         private static void TurnBasedAttack(string playerName, char[,] playerAttacks, char[,] opponentMap,
@@ -169,7 +108,7 @@ namespace battleShips
             int row, col;
             do
             {
-                if (!CheckShipsLeft(opponentMap)) // check if there is a winner
+                if (!Check.ShipsLeft(opponentMap)) // check if there is a winner
                 {
                     Console.Clear();
                     Console.WriteLine($"{playerName} wins! All ships of the opponent are sunk.");
@@ -180,23 +119,23 @@ namespace battleShips
 
                 Console.WriteLine($"{playerName}'s turn to attack!");
                 Console.WriteLine("Your map:");
-                ShowBoard(playerMap);
+                Show.Board(playerMap);
                 Console.WriteLine("Attack map:");
-                ShowBoard(playerAttacks);
+                Show.Board(playerAttacks);
                 Console.Write("Enter row to attack (1-10): ");
 
                 do
                 {
                     if (int.TryParse(Console.ReadLine(), out row)) // get the row input
                         row -= 1; // 0-based index conversion
-                } while (row < 0 || row >= _mapSize); // check if the input is valid
+                } while (row < 0 || row >= mapSize); // check if the input is valid
 
                 do
                 {
                     Console.Write("Enter column to attack (1-10): ");
                     if (int.TryParse(Console.ReadLine(), out col)) // get the column input
                         col -= 1; // 0-based index conversion
-                } while (col < 0 || col >= _mapSize); // check if the input is valid
+                } while (col < 0 || col >= mapSize); // check if the input is valid
             } while (Attack(row, col, opponentMap, playerAttacks));
 
             playerTurn = playerTurn == 1 ? 2 : 1; // Switch the player turn
@@ -204,36 +143,6 @@ namespace battleShips
             Console.WriteLine("End of your turn. Press any button");
             Console.ReadKey();
         }
-
-        public static void ShowBoard(char[,] board)
-        {
-            Console.Write("    "); // Add indentation for alignment
-
-            // Dynamic board numbers
-            for (var i = 0; i < _mapSize; i++)
-                Console.Write(i >= 9 ? $" {i + 1}" : $" {i + 1} "); // Display the column number
-
-            Console.WriteLine();
-
-            Console.Write("    "); // Add indentation for alignment
-            for (var i = 0; i < _mapSize; i++) Console.Write("═══"); // Dynamic horizontal lines
-
-            Console.WriteLine();
-
-            for (var i = 0; i < _mapSize; i++)
-            {
-                // Add an extra space for double-digit row numbers
-                Console.Write(i >= 9 ? $"{i + 1} ║" : $"{i + 1}  ║"); // Display the row number
-
-                for (var j = 0; j < _mapSize; j++) // Loop through columns
-                    Console.Write($" {board[i, j]} "); // Display the cell
-
-                Console.WriteLine();
-            }
-
-            Console.WriteLine();
-        }
-
 
         // Let the player place ships manually on their board
         public static void PlaceShips(char[,] playerMap, string playerName)
@@ -244,7 +153,7 @@ namespace battleShips
             for (var i = 0; i < shipNames.Length; i++) // Loop through the ships
             {
                 Console.Clear();
-                ShowBoard(playerMap);
+                Show.Board(playerMap);
 
                 Console.WriteLine($"{playerName}, place your ships on the board.");
 
@@ -274,7 +183,7 @@ namespace battleShips
                     } while (direction < 1 || direction > 2); // check if the input is valid
 
                     validPlacement =
-                        CheckShipPlacement(playerMap, row, col, shipSizes[i],
+                        Check.ShipPlacement(playerMap, row, col, shipSizes[i],
                             direction); // Check if the ship can be placed
 
                     if (validPlacement)
@@ -288,27 +197,6 @@ namespace battleShips
                     }
                 }
             }
-        }
-
-        // Check if the ship can be placed in the given position and direction
-        public static bool CheckShipPlacement(char[,] board, int row, int col, int size, int direction)
-        {
-            if (direction == 1) // horizontal
-            {
-                if (col + size > 10) return false;
-                for (var i = 0; i < size; i++)
-                    if (board[row, col + i] != '-')
-                        return false; // check if already occupied
-            }
-            else // vertical
-            {
-                if (row + size > 10) return false;
-                for (var i = 0; i < size; i++)
-                    if (board[row + i, col] != '-')
-                        return false; // check if already occupied
-            }
-
-            return true;
         }
 
         // Place the ship on the board
@@ -368,7 +256,7 @@ namespace battleShips
                 enemyPlayerMap[row, col] = 'X'; // Mark as hit
                 playerAttackMap[row, col] = 'X';
                 Console.WriteLine("Hit!");
-                if (CheckShipSunk(enemyPlayerMap, shipType)) Console.WriteLine("Ship sunk!");
+                if (Check.ShipSunk(enemyPlayerMap, shipType)) Console.WriteLine("Ship sunk!");
 
                 Console.WriteLine("Press any key to continue");
                 Console.ReadKey();
@@ -385,26 +273,6 @@ namespace battleShips
 
             Console.WriteLine("Already tried!");
             return true;
-        }
-
-        // Check if a ship has been sunk
-        private static bool CheckShipSunk(char[,] board, char shipType)
-        {
-            foreach (var cell in board)
-                if (cell == shipType)
-                    return false; // The ship has not been sunk
-
-            return true; // The ship has been sunk
-        }
-
-        // Check if all ships have been sunk
-        private static bool CheckShipsLeft(char[,] board)
-        {
-            foreach (var cell in board)
-                if (cell == 'S' || cell == 'D' || cell == 'B' || cell == 'C' || cell == 'P')
-                    return true; // There are still ships on the board
-
-            return false; // No ships left
         }
     }
 }
