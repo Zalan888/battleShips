@@ -40,14 +40,9 @@ namespace battleShips
             return true; // The ship has been sunk
         }
 
-        public static int ShipZonesLeft(char[,] board)
+        public static bool WasTried(int row, int col, char[,] board)
         {
-            var count = 0;
-            foreach (var cell in board)
-                if (cell == 'S' || cell == 'D' || cell == 'B' || cell == 'C' || cell == 'P')
-                    count++; // Increment the count if a ship is found
-
-            return count;
+            return board[row, col] == 'O' || board[row, col] == 'X';
         }
     }
 }

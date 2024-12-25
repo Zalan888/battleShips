@@ -44,6 +44,8 @@ namespace battleShips
                     MainClass.gameMode = 2; // Salvo
                     break;
             }
+
+            MainClass.Menu();
         }
     }
 }
